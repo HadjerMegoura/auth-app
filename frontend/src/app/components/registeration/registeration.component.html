@@ -1,0 +1,64 @@
+<div class="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+  <div class="bg-white border border-gray-200 rounded-2xl p-8 w-full max-w-md">
+
+    <div class="flex items-center gap-3 mb-6">
+      <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
+        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-lg font-medium text-gray-900">Create an account</h1>
+        <p class="text-sm text-gray-500">Fill in your details to get started</p>
+      </div>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+      <div class="grid grid-cols-2 gap-3 mb-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-1">First name</label>
+          <input formControlName="firstName" type="text" placeholder="John"
+            class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-300 focus:border-purple-400 transition"
+            [class.border-red-400]="isInvalid('firstName')"
+            [class.border-gray-300]="!isInvalid('firstName')" />
+          <p *ngIf="isInvalid('firstName')" class="text-xs text-red-500 mt-1">Required</p>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-1">Last name</label>
+          <input formControlName="lastName" type="text" placeholder="Doe"
+            class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-300 focus:border-purple-400 transition"
+            [class.border-red-400]="isInvalid('lastName')"
+            [class.border-gray-300]="!isInvalid('lastName')" />
+          <p *ngIf="isInvalid('lastName')" class="text-xs text-red-500 mt-1">Required</p>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-600 mb-1">Email address</label>
+        <input formControlName="email" type="email" placeholder="john@example.com"
+          class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-300 focus:border-purple-400 transition"
+          [class.border-red-400]="isInvalid('email')"
+          [class.border-gray-300]="!isInvalid('email')" />
+        <p *ngIf="isInvalid('email')" class="text-xs text-red-500 mt-1">Enter a valid email</p>
+      </div>
+
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-gray-600 mb-1">Password</label>
+        <input formControlName="password" [type]="showPassword ? 'text' : 'password'" placeholder="••••••••"
+          class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-300 focus:border-purple-400 transition"
+          [class.border-red-400]="isInvalid('password')"
+          [class.border-gray-300]="!isInvalid('password')" />
+        <div class="flex justify-between items-center mt-1">
+          <p *ngIf="isInvalid('password')" class="text-xs text-red-500">At least 8 characters</p>
+          <button type="button" class="text-xs text-gray-400 hover:text-gray-600 ml-auto"
+            (click)="showPassword = !showPassword">
+            {{ showPassword ? 'Hide' : 'Show' }}
+          </button>
+        </div>
+      </div>
+
+      <button type="submit"
+        class="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2.5 rounded-lg text-sm transition">
+        Create account
