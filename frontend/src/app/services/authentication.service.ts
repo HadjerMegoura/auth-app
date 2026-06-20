@@ -9,6 +9,11 @@ export interface RegisterPayload {
   password: string;
 }
 
+export interface LoginPayload {
+  email: string;
+  password: string;
+}
+
 export interface AuthResponse {
   token: string;
 }
@@ -24,6 +29,10 @@ export class AuthService {
 
   register(payload: RegisterPayload): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/register`, payload);
+  }
+
+  login(payload: RegisterPayload): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, payload);
   }
 
 }

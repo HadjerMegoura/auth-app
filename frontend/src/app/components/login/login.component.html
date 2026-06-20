@@ -1,0 +1,63 @@
+<div class="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+  <div class="bg-white border border-gray-200 rounded-2xl p-8 w-full max-w-md">
+
+    <div class="flex items-center gap-3 mb-6">
+      <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
+        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+            d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-lg font-medium text-gray-900">Welcome back</h1>
+        <p class="text-sm text-gray-500">Sign in to your account</p>
+      </div>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-600 mb-1">Email address</label>
+        <input formControlName="email" type="email" placeholder="john@example.com"
+          class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-300 focus:border-purple-400 transition"
+          [class.border-red-400]="isInvalid('email')"
+          [class.border-gray-300]="!isInvalid('email')" />
+        <p *ngIf="isInvalid('email')" class="text-xs text-red-500 mt-1">Enter a valid email</p>
+      </div>
+
+      <div class="mb-6">
+        <div class="flex justify-between items-center mb-1">
+          <label class="block text-sm font-medium text-gray-600">Password</label>
+          <a href="#" class="text-xs text-purple-600 hover:underline">Forgot password?</a>
+        </div>
+        <input formControlName="password" [type]="showPassword ? 'text' : 'password'" placeholder="••••••••"
+          class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-purple-300 focus:border-purple-400 transition"
+          [class.border-red-400]="isInvalid('password')"
+          [class.border-gray-300]="!isInvalid('password')" />
+        <div class="flex justify-between items-center mt-1">
+          <p *ngIf="isInvalid('password')" class="text-xs text-red-500">Password is required</p>
+          <button type="button" class="text-xs text-gray-400 hover:text-gray-600 ml-auto"
+            (click)="showPassword = !showPassword">
+            {{ showPassword ? 'Hide' : 'Show' }}
+          </button>
+        </div>
+      </div>
+
+      <p *ngIf="errorMessage" class="text-sm text-red-500 text-center mb-3">
+        {{ errorMessage }}
+      </p>
+
+      <button type="submit" [disabled]="loading"
+        class="w-full bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white font-medium py-2.5 rounded-lg text-sm transition">
+        {{ loading ? 'Signing in...' : 'Sign in' }}
+      </button>
+
+    </form>
+
+    <p class="text-center text-sm text-gray-500 mt-4">
+      Don't have an account?
+      <a routerLink="/register" class="text-purple-600 font-medium hover:underline">Create one</a>
+    </p>
+
+  </div>
+</div>
