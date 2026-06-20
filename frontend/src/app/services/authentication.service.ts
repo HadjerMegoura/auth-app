@@ -7,6 +7,7 @@ export interface RegisterPayload {
   lastName: string;
   email: string;
   password: string;
+  role: string;
 }
 
 export interface LoginPayload {
@@ -28,6 +29,10 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   register(payload: RegisterPayload): Observable<AuthResponse> {
+    payload = {
+      ...payload,
+      role: 'ADMIN'
+    }
     return this.http.post<AuthResponse>(`${this.apiUrl}/register`, payload);
   }
 

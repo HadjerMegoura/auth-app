@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AuthService } from '../../services/authentication.service';
+import { AuthResponse, AuthService } from '../../services/authentication.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-registeration',
@@ -15,7 +16,7 @@ export class RegisterationComponent {
     form: FormGroup;
   showPassword = false;
 
-  constructor(private fb: FormBuilder, private authenticationService: AuthService) {
+  constructor(private fb: FormBuilder,  private router: Router, private authenticationService: AuthService) {
     this.form = this.fb.group({
       firstName: ['', Validators.required],
       lastName:  ['', Validators.required],
@@ -27,7 +28,16 @@ export class RegisterationComponent {
   onSubmit() {
     console.log('submit')
     if (this.form.valid) {
-      this.authenticationService.register(this.form.value).subscribe()
+      this.authenticationService.register(this.form.value).subscribe(
+        {
+          next: (response: AuthResponse) => {
+            if (response.token) {
+               this.router.navigate(['/login']);
+            }
+          },
+          error: () => {}
+        }
+      )
     } else {
       this.form.markAllAsTouched();
     }
