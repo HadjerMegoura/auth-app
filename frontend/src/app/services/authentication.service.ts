@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
 
 export interface RegisterPayload {
   firstName: string;
@@ -29,15 +29,37 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   register(payload: RegisterPayload): Observable<AuthResponse> {
-    payload = {
-      ...payload,
-      role: 'ADMIN'
-    }
-    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, payload);
+    payload = { ...payload, role: 'ADMIN' };
+    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, payload).pipe(
+      tap(res => this.saveToken(res.token))
+    );
   }
 
-  login(payload: RegisterPayload): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, payload);
+  login(payload: LoginPayload): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, payload).pipe(
+      tap(res => this.saveToken(res.token))
+    );
   }
 
+  saveToken(token: string): void {
+    localStorage.setItem('token', token);
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem('token');
+  }
+
+  isLoggedIn(): boolean {
+    return !!this.getToken();
+  }
+
+  logout(): void {
+    localStorage.removeItem('token');
+  }
+
+  getAuthHeaders(): HttpHeaders {
+    return new HttpHeaders({
+      'Authorization': `Bearer ${this.getToken()}`
+    });
+  }
 }

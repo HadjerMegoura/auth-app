@@ -1,6 +1,8 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/authentication.service';
+import { ProductService } from '../../services/product.service';
 
 interface Product {
   id: number;
@@ -21,18 +23,26 @@ interface Product {
 export class HomeComponent {
 
   products: Product[] = [
-    { id: 1, name: 'Wireless Headphones', price: 79.99, category: 'Audio', image: 'https://placehold.co/300x300/EEEDFE/534AB7?text=Headphones' },
-    { id: 2, name: 'Smart Watch', price: 149.99, category: 'Wearables', image: 'https://placehold.co/300x300/EEEDFE/534AB7?text=Watch' },
-    { id: 3, name: 'Mechanical Keyboard', price: 89.99, category: 'Accessories', image: 'https://placehold.co/300x300/EEEDFE/534AB7?text=Keyboard' },
-    { id: 4, name: 'USB-C Hub', price: 34.99, category: 'Accessories', image: 'https://placehold.co/300x300/EEEDFE/534AB7?text=Hub' },
-    { id: 5, name: 'Portable Speaker', price: 59.99, category: 'Audio', image: 'https://placehold.co/300x300/EEEDFE/534AB7?text=Speaker' },
-    { id: 6, name: 'Laptop Stand', price: 24.99, category: 'Accessories', image: 'https://placehold.co/300x300/EEEDFE/534AB7?text=Stand' },
+   
   ];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService, private productService: ProductService) {}
+
+  ngOnInit() {
+    this.productService.getProducts().subscribe(
+      {
+        next: (products: any) => {
+          this.products = products
+        },
+        error: () => {
+          console.error("error in loading products")
+        }
+      }
+    )
+  }
 
   logout() {
-    localStorage.removeItem('token');
+    this.authService.logout();
     this.router.navigate(['/login']);
   }
 }
