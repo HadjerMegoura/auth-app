@@ -40,7 +40,16 @@ export class AuthService {
       tap(res => this.saveToken(res.token))
     );
   }
-
+  loginWithCookies(payload: LoginPayload): Observable<string> {
+  return this.http.post(
+    `${this.apiUrl}/loginCookies`,
+    payload,
+    {
+      responseType: 'text',
+      withCredentials: true
+    }
+  ) as Observable<string>;
+}
   saveToken(token: string): void {
     localStorage.setItem('token', token);
   }
