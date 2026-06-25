@@ -93,4 +93,19 @@ public class AuthenticationService {
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
     }
+
+    public void logout(HttpServletResponse response) {
+
+        ResponseCookie cookie = ResponseCookie.from("access_token", "")
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .maxAge(0)
+                .build();
+
+        response.addHeader(
+                HttpHeaders.SET_COOKIE,
+                cookie.toString()
+        );
+    }
 }

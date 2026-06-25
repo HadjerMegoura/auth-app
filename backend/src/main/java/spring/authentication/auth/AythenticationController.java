@@ -38,4 +38,14 @@ public class AythenticationController {
 
         return ResponseEntity.ok("Login successful");
     }
+
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletResponse response) {
+
+        authenticationService.logout(response);
+
+
+        return ResponseEntity.ok("Logged out");
+    }
 }
