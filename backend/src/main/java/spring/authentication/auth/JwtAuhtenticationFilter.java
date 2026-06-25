@@ -42,13 +42,24 @@ public class JwtAuhtenticationFilter extends OncePerRequestFilter {
         final String jwt;
         final String userEmail;
 
-        if (authHeader == null || !authHeader.startsWith("Bearer")) {
+        /*if (authHeader == null || !authHeader.startsWith("Bearer")) {
+            //let the filter pass to the next filter and an early return
+            filterChain.doFilter(request, response);
+            return;
+        }*/
+
+        //jwt using cookies
+        jwt = jwtService.extractJwtFromCookies(request);
+
+        if (jwt == null) {
             //let the filter pass to the next filter and an early return
             filterChain.doFilter(request, response);
             return;
         }
 
-        jwt = authHeader.substring(7);
+        //jwt usign bearer token
+        //jwt = authHeader.substring(7);
+
         userEmail =  jwtService.extractEmail(jwt);
         System.out.println("Email from JWT = " + userEmail);
 

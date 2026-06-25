@@ -3,6 +3,8 @@ package spring.authentication.auth;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -53,6 +55,23 @@ public class JwtService {
     public Boolean validatToken(String token, UserDetails userDetails) {
         final String userEmail = extractEmail(token);
         return userEmail.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    }
+
+    public String extractJwtFromCookies(HttpServletRequest request) {
+
+        Cookie[] cookies = request.getCookies();
+
+        if (cookies == null) {
+            return null;
+        }
+
+        for (Cookie cookie : cookies) {
+            if ("access_token".equals(cookie.getName())) {
+                return cookie.getValue();
+            }
+        }
+
+        return null;
     }
 
     private Boolean isTokenExpired(String token) {
