@@ -1,13 +1,19 @@
 package spring.authentication.auth;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.web.server.Cookie;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import spring.authentication.user.User;
 import spring.authentication.user.userRepository;
+
+import java.time.Duration;
 
 @Service
 @RequiredArgsConstructor
@@ -37,8 +43,7 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse login(AuthenticationRequest request) {
-        log.info("email: {}", request.getEmail());
-        log.info("password: {}", request.getPassword());
+
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -52,8 +57,40 @@ public class AuthenticationService {
         }
 
         var user = userRepository.findByEmail(request.getEmail()).orElseThrow();
-        log.info("user: {}", user);
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder().token(jwtToken).build();
+    }
+
+
+
+    //cookies only login
+    public void loginCookiesOnly(AuthenticationRequest authenticationRequest, HttpServletResponse response){
+
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            authenticationRequest.getEmail(),
+                            authenticationRequest.getPassword()
+                    )
+            );
+        } catch (Exception e) {
+            log.error("Authentication failed", e);
+            throw e;
+        }
+
+        var user = userRepository.findByEmail(authenticationRequest.getEmail()).orElseThrow();
+        var jwtToken = jwtService.generateToken(user);
+
+        //store token in the cookies
+        ResponseCookie cookie = ResponseCookie.from("access_token", jwtToken)
+                .httpOnly(true)
+                .secure(false)
+                .sameSite("Strict")
+                .path("/")
+                .maxAge(Duration.ofDays(1))
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
     }
 }

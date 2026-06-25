@@ -1,6 +1,8 @@
 package spring.authentication.auth;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,5 +27,15 @@ public class AythenticationController {
             @RequestBody AuthenticationRequest request
     ) {
         return authenticationService.login(request);
+    }
+
+    @PostMapping("/loginCookies")
+    public ResponseEntity<?> login(
+            @RequestBody AuthenticationRequest request,
+            HttpServletResponse response) {
+
+        authenticationService.loginCookiesOnly(request, response);
+
+        return ResponseEntity.ok("Login successful");
     }
 }
