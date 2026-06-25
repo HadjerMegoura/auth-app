@@ -34,10 +34,10 @@ export class LoginComponent {
       this.loading = true;
       this.errorMessage = '';
 
-      this.authService.login(this.form.value).subscribe({
+      this.authService.loginWithCookies(this.form.value).subscribe({
         next: (res) => {
           this.loading = false;
-          localStorage.setItem('token', res.token);
+         // localStorage.setItem('token', res.token);
           this.router.navigate(['/home']);
         },
         error: (err) => {

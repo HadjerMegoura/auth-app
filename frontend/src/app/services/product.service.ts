@@ -18,7 +18,8 @@ export class ProductService {
 
   getProducts(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/all`, {
-      headers: this.authService.getAuthHeaders()
+      //headers: this.authService.getAuthHeaders()
+      withCredentials: true
     });
   }
 }
