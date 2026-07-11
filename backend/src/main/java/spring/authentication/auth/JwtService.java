@@ -37,6 +37,12 @@ public class JwtService {
     public String generateToken(UserDetails userDetails) {
         return generateToken(new HashMap<>(), userDetails);
     }
+
+    public String generateRefreshToken(UserDetails userDetails) {
+        return generateRefreshToken(new HashMap<>(), userDetails);
+    }
+
+
     public String generateToken(
             Map<String, Object> extraClaims,
             UserDetails userDetails
@@ -47,6 +53,20 @@ public class JwtService {
                 .setSubject(userDetails.getUsername()) //unique value to be extracted and used in auth
                 .setIssuedAt(new Date (System.currentTimeMillis()) ) // created at
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24)) //experation time
+                .signWith(getSigningKey(),SignatureAlgorithm.HS256) //needed params for generation (algo + key)
+                .compact(); //generate and return the token
+    }
+
+    public String generateRefreshToken(
+            Map<String, Object> extraClaims,
+            UserDetails userDetails
+    ) {
+        return Jwts
+                .builder() //builder design pattern (constructor)
+                .setClaims(extraClaims) //claims we want to include in our token
+                .setSubject(userDetails.getUsername()) //unique value to be extracted and used in auth
+                .setIssuedAt(new Date (System.currentTimeMillis()) ) // created at
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24 * 7)) //experation time
                 .signWith(getSigningKey(),SignatureAlgorithm.HS256) //needed params for generation (algo + key)
                 .compact(); //generate and return the token
     }

@@ -71,4 +71,17 @@ export class AuthService {
       'Authorization': `Bearer ${this.getToken()}`
     });
   }
+
+  
+  logoutCookies(): Observable<string> {
+  return this.http.post(
+    `${this.apiUrl}/logout`,
+    {},
+    {
+      withCredentials: true,
+      responseType: 'text'
+    }
+  );
+
+  }
 }

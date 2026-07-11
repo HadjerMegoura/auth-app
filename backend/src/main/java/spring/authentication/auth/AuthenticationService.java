@@ -80,6 +80,7 @@ public class AuthenticationService {
 
         var user = userRepository.findByEmail(authenticationRequest.getEmail()).orElseThrow();
         var jwtToken = jwtService.generateToken(user);
+        var jwtRefreshToken = jwtService.generateRefreshToken(user);
 
         //store token in the cookies
         ResponseCookie cookie = ResponseCookie.from("access_token", jwtToken)
@@ -90,7 +91,17 @@ public class AuthenticationService {
                 .maxAge(Duration.ofDays(1))
                 .build();
 
+        //store token in the cookies
+        ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", jwtRefreshToken)
+                .httpOnly(true)
+                .secure(false)
+                .sameSite("Strict")
+                .path("/")
+                .maxAge(Duration.ofDays(7))
+                .build();
+
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
 
     }
 
@@ -108,4 +119,6 @@ public class AuthenticationService {
                 cookie.toString()
         );
     }
+
+    public void refresh() {}
 }

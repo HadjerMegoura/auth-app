@@ -48,4 +48,11 @@ public class AythenticationController {
 
         return ResponseEntity.ok("Logged out");
     }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<String> refresh() {
+
+        authenticationService.refresh();
+        return ResponseEntity.ok("refresh token");
+    }
 }
