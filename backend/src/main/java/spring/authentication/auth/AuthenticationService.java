@@ -90,7 +90,7 @@ public class AuthenticationService {
                 .secure(false)
                 .sameSite("Strict")
                 .path("/")
-                .maxAge(Duration.ofDays(1))
+                .maxAge(Duration.ofMinutes(2))
                 .build();
 
         //store token in the cookies

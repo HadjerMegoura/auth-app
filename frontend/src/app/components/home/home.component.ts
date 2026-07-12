@@ -42,7 +42,14 @@ export class HomeComponent {
   }
 
   logout() {
-    this.authService.logout();
-    this.router.navigate(['/login']);
+    this.authService.logoutCookies().subscribe({
+      next: () => {
+            this.router.navigate(['/login']);
+      },
+      error: () => {
+        console.error('error in logging user out')
+      }
+    });
+
   }
 }

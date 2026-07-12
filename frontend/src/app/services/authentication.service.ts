@@ -84,4 +84,16 @@ export class AuthService {
   );
 
   }
+
+    refresh(): Observable<string> {
+  return this.http.post(
+    `${this.apiUrl}/refresh`,
+    {},
+    {
+      withCredentials: true,
+      responseType: 'text'
+    }
+  );
+
+  }
 }
