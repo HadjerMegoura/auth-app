@@ -1,5 +1,6 @@
 package spring.authentication.auth;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -50,9 +51,9 @@ public class AythenticationController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<String> refresh() {
+    public ResponseEntity<String> refresh(HttpServletRequest request, HttpServletResponse response) {
 
-        authenticationService.refresh();
+        authenticationService.refresh(request, response);
         return ResponseEntity.ok("refresh token");
     }
 }

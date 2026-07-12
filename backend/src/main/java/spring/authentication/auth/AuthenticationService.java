@@ -1,13 +1,15 @@
 package spring.authentication.auth;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.web.server.Cookie;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import spring.authentication.user.User;
@@ -120,5 +122,69 @@ public class AuthenticationService {
         );
     }
 
-    public void refresh() {}
+    public void refresh(HttpServletRequest request, HttpServletResponse response) {
+        //read the refresh token from the API header or the cookies
+        Cookie[] cookies = request.getCookies();
+
+        String requestRefreshToken = null;
+
+        Boolean isTokenValid = false;
+
+        if (cookies == null) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
+        for (Cookie cookie : cookies) {
+            //read the refresh token from the cookies in the request
+            if ("refresh_token".equals(cookie.getName())) {
+               requestRefreshToken =  cookie.getValue();
+
+               //get the user email from the token's claims
+                String email = jwtService.extractEmail(requestRefreshToken);
+
+                // get the user by its email
+                UserDetails user = userRepository.findByEmail(email)
+                        .orElseThrow();
+
+                //check if the refresh token is still valid
+               isTokenValid = this.jwtService.validatToken(requestRefreshToken, user);
+
+                //if yes: generate a new access token
+                if (isTokenValid) {
+                    //generate a new access token
+                    String jwtAccessToken = this.jwtService.generateToken(user);
+                    //store token in the cookies
+                    ResponseCookie accessTokencookie = ResponseCookie.from("access_token", jwtAccessToken)
+                            .httpOnly(true)
+                            .secure(false)
+                            .sameSite("Strict")
+                            .path("/")
+                            .maxAge(Duration.ofDays(1))
+                            .build();
+
+
+                    response.addHeader(HttpHeaders.SET_COOKIE, accessTokencookie.toString());
+
+
+                    return;
+                }
+                //else: 403 user u,authenticated
+                else {
+                    response.setStatus(401);
+                }
+            }
+            //else: 403 user u,authenticated
+            if (requestRefreshToken == null) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
+        }
+
+
+
+
+
+
+    }
 }
