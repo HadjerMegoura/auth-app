@@ -96,4 +96,12 @@ export class AuthService {
   );
 
   }
+
+  loginWithGithub(): void {
+    window.location.href = `http://localhost:8080/oauth2/authorization/github`;
+  }
+
+  getCurrentUser(): Observable<any> {
+    return this.http.get(`http://localhost:8080/user/me`, { withCredentials: true });
+  }
 }

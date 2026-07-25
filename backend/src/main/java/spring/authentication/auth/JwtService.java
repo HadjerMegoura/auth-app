@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,9 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    private static final String SECRET_KEY = "e2b008719ca8f38bd005776235bda6524c436250ff1c834a565c390f4804ec86";
+    @Value("${app.jwt.secret}")
+    private String secretKey;
+
 
     public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -42,6 +45,21 @@ public class JwtService {
         return generateRefreshToken(new HashMap<>(), userDetails);
     }
 
+    public String generateToken(String email) {
+        return generateToken(new HashMap<>(), email);
+    }
+
+    public String generateToken(Map<String, Object> extraClaims, String email) {
+        return Jwts
+                .builder()
+                .setClaims(extraClaims)
+                .setSubject(email)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // see bug below
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
 
     public String generateToken(
             Map<String, Object> extraClaims,
@@ -52,7 +70,7 @@ public class JwtService {
                 .setClaims(extraClaims) //claims we want to include in our token
                 .setSubject(userDetails.getUsername()) //unique value to be extracted and used in auth
                 .setIssuedAt(new Date (System.currentTimeMillis()) ) // created at
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24)) //experation time
+                .setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24)) //experation time
                 .signWith(getSigningKey(),SignatureAlgorithm.HS256) //needed params for generation (algo + key)
                 .compact(); //generate and return the token
     }
@@ -66,7 +84,7 @@ public class JwtService {
                 .setClaims(extraClaims) //claims we want to include in our token
                 .setSubject(userDetails.getUsername()) //unique value to be extracted and used in auth
                 .setIssuedAt(new Date (System.currentTimeMillis()) ) // created at
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24 * 7)) //experation time
+                .setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 *  60 * 24 * 7)) //experation time
                 .signWith(getSigningKey(),SignatureAlgorithm.HS256) //needed params for generation (algo + key)
                 .compact(); //generate and return the token
     }
@@ -110,7 +128,7 @@ public class JwtService {
                 .getPayload();
     }
     private Key getSigningKey() {
-        byte[] keyBytes = Base64.getDecoder().decode(SECRET_KEY);
+        byte[] keyBytes = Base64.getDecoder().decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }
