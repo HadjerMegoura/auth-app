@@ -54,4 +54,8 @@ export class LoginComponent {
     const c = this.form.get(field);
     return c?.invalid && c?.touched;
   }
+
+  loginWithGithub() {
+    this.authService.loginWithGithub();
+  }
 }

@@ -22,6 +22,8 @@ interface Product {
 })
 export class HomeComponent {
 
+  currentUser: any = null;
+
   products: Product[] = [
    
   ];
@@ -29,6 +31,7 @@ export class HomeComponent {
   constructor(private router: Router, private authService: AuthService, private productService: ProductService) {}
 
   ngOnInit() {
+    this.getCurrentUser();
     this.productService.getProducts().subscribe(
       {
         next: (products: any) => {
@@ -39,6 +42,17 @@ export class HomeComponent {
         }
       }
     )
+  }
+
+  getCurrentUser() {
+    this.authService.getCurrentUser().subscribe({
+      next: (user) => {
+        this.currentUser = user.username ?? user.attributes.name;
+      },
+      error: (err) => {
+        console.error('Error fetching current user:', err);
+      }
+    });
   }
 
   logout() {
