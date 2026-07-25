@@ -9,9 +9,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import spring.authentication.user.Role;
-import spring.authentication.user.User;
-import spring.authentication.user.userRepository;
+import spring.authentication.auth.services.JwtService;
+import spring.authentication.entities.Role;
+import spring.authentication.entities.User;
+import spring.authentication.repositories.userRepository;
 
 
 import java.io.IOException;

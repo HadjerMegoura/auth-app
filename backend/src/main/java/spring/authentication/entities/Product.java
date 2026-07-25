@@ -1,4 +1,4 @@
-package spring.authentication.product;
+package spring.authentication.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

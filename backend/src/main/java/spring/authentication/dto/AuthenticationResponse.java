@@ -1,4 +1,4 @@
-package spring.authentication.auth;
+package spring.authentication.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

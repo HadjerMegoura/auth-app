@@ -1,4 +1,4 @@
-package spring.authentication.demo;
+package spring.authentication.controllers;
 
 
 import org.springframework.http.ResponseEntity;

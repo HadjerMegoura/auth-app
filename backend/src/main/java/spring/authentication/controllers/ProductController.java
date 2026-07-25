@@ -1,7 +1,9 @@
-package spring.authentication.product;
+package spring.authentication.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import spring.authentication.entities.Product;
+import spring.authentication.repositories.ProductRepository;
 
 import java.util.List;
 
@@ -10,7 +12,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductController {
 
-    private final  ProductRepository productRepo;
+    private final ProductRepository productRepo;
 
     @GetMapping("/all")
     public List<Product> findAll() throws Exception{

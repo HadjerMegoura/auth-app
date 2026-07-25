@@ -9,9 +9,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import spring.authentication.auth.CustomOAuth2UserService;
 import spring.authentication.auth.JwtAuhtenticationFilter;
 import spring.authentication.auth.OAuth2SuccessHandler;
+import spring.authentication.auth.services.CustomOAuth2UserService;
 
 
 @Configuration

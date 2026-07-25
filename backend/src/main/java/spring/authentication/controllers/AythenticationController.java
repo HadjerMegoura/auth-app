@@ -1,4 +1,4 @@
-package spring.authentication.auth;
+package spring.authentication.controllers;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import spring.authentication.dto.AuthenticationRequest;
+import spring.authentication.dto.AuthenticationResponse;
+import spring.authentication.dto.RegisterRequest;
+import spring.authentication.auth.services.AuthenticationService;
 
 @RestController
 @RequestMapping("/auth")
